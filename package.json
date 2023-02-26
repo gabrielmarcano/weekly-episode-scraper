@@ -1,6 +1,10 @@
 {
   "name": "weekly-episode-scraper",
   "version": "1.0.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gabrielmarcano/weekly-episode-scraper"
+  },
   "description": "Get links for weekly episode series",
   "main": "index.js",
   "scripts": {
