@@ -1,0 +1,14 @@
+{
+  "name": "weekly-episode-scraper",
+  "version": "1.0.0",
+  "description": "Get links for weekly episode series",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "author": "Gabriel",
+  "license": "MIT",
+  "dependencies": {
+    "puppeteer": "^19.7.2"
+  }
+}
