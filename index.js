@@ -1,30 +1,35 @@
 const puppeteer = require('puppeteer');
+const fs = require('fs');
 
 (async () => {
   const browser = await puppeteer.launch()
   const page = await browser.newPage()
 
-  await page.goto('https://developer.chrome.com/')
+  const links = []
 
-  // Set screen size
-  await page.setViewport({width: 1080, height: 1024})
+  await page.goto(`https://webcache.googleusercontent.com/search?q=cache:https://www3.animeflv.net/anime/vinland-saga-season-2`)
 
-  // Type into search box
-  await page.type('.search-box__input', 'automate beyond recorder')
+  const linkList = await page.$$eval('a[href^="/ver/vinland-saga-season-2-"',
+    (episodes => episodes.map(episode => {
+      return `https://webcache.googleusercontent.com/search?q=cache:${episode.href}`
+    })))
 
-  // Wait and click on first result
-  const searchResultSelector = '.search-box__link'
-  await page.waitForSelector(searchResultSelector)
-  await page.click(searchResultSelector)
+  for (const link of linkList) {
+    await Promise.all([
+      page.waitForNavigation(),
+      page.goto(link),
+      page.waitForSelector('a[href^="https://mega.nz/"'),
+    ])
 
-  // Locate the full title with a unique string
-  const textSelector = await page.waitForSelector(
-    'text/Customize and automate'
-  )
-  const fullTitle = await textSelector.evaluate(el => el.textContent)
+    const mega = await page.$eval('a[href^="https://mega.nz/"', e => e.href)
 
-  // Print the full title
-  console.log('The title of this blog post is "%s".', fullTitle)
+    if (!links.includes(mega)) {
+      links.push(mega)
+    }
+  }
+
+  console.log(links)
+  fs.writeFileSync('./links.txt', links.join('\n'))
 
   await browser.close()
 })()
